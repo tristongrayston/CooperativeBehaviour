@@ -31,6 +31,7 @@ class Window:
 
         # Flag indicating the window was closed
         self.closed = False
+        self.counter = 0
 
         def close_handler(evt):
             self.closed = True
@@ -52,6 +53,8 @@ class Window:
         # Let matplotlib process UI events
         # This is needed for interactive mode to work properly
         plt.pause(0.001)
+
+
 
     def set_caption(self, text):
         """
@@ -88,3 +91,6 @@ class Window:
         """
 
         plt.close()
+
+    def save_img(self, img_no):
+        pass

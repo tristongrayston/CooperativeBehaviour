@@ -7,6 +7,8 @@ from gym.utils import seeding
 from .rendering import *
 from .window import Window
 import numpy as np
+import matplotlib as plt
+
 
 # Size in pixels of a tile in the full-scale human view
 TILE_PIXELS = 32
@@ -1246,11 +1248,12 @@ class MultiGridEnv(gym.Env):
     def step(self, actions):
         self.step_count += 1
 
+        # Right, so this makes sure the order of the agents actions are randomized
         order = np.random.permutation(len(actions))
-
         rewards = np.zeros(len(actions))
         done = False
 
+        # This takes the elements in order, refering to the placements in self.agents (presumably a list)
         for i in order:
 
             if self.agents[i].terminated or self.agents[i].paused or not self.agents[i].started or actions[i] == self.actions.still:

@@ -9,7 +9,6 @@ parser.add_argument('-e', '--env', default='soccer', type=str)
 args = parser.parse_args()
 
 def main():
-
     if args.env == 'soccer':
         register(
             id='multigrid-soccer-v0',
@@ -38,6 +37,7 @@ def main():
 
         if done:
             break
+        
 
 if __name__ == "__main__":
     main()
