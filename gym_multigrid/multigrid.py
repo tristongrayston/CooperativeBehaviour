@@ -794,7 +794,7 @@ class Grid:
     #     return grid, vis_mask
 
     def process_vis(grid, agent_pos):
-        mask = np.zeros(shape=(grid.width, grid.height), dtype=np.bool)
+        mask = np.zeros(shape=(grid.width, grid.height), dtype=np.bool_)
 
         mask[agent_pos[0], agent_pos[1]] = True
 
@@ -980,7 +980,7 @@ class MultiGridEnv(gym.Env):
 
     def seed(self, seed=1337):
         # Seed the random number generator
-        self.np_random, _ = seeding.np_random(seed)
+        _ = np.random.rand(seed)
         return [seed]
 
     @property
@@ -1078,21 +1078,21 @@ class MultiGridEnv(gym.Env):
         Generate random integer in [low,high[
         """
 
-        return self.np_random.randint(low, high)
+        return np.random.randint(low, high)
 
     def _rand_float(self, low, high):
         """
-        Generate random float in [low,high[
+        Generate random float in [low,high]
         """
 
-        return self.np_random.uniform(low, high)
+        return np.random.uniform(low, high)
 
     def _rand_bool(self):
         """
         Generate random boolean value
         """
 
-        return (self.np_random.randint(0, 2) == 0)
+        return (np.random.randint(0, 2) == 0)
 
     def _rand_elem(self, iterable):
         """
@@ -1133,8 +1133,8 @@ class MultiGridEnv(gym.Env):
         """
 
         return (
-            self.np_random.randint(xLow, xHigh),
-            self.np_random.randint(yLow, yHigh)
+            np.random.randint(xLow, xHigh),
+            np.random.randint(yLow, yHigh)
         )
 
     def place_obj(self,
