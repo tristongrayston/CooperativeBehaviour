@@ -1396,6 +1396,7 @@ class MultiGridEnv(gym.Env):
         if mode == 'human' and not self.window:
             self.window = Window('gym_multigrid')
             self.window.show(block=False)
+            
 
         if highlight:
 
