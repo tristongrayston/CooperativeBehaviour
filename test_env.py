@@ -16,6 +16,13 @@ def main():
         )
         env = gym.make('multigrid-soccer-v0')
 
+    elif args.env == 'cooperative':
+        register(
+            id = 'multigrid-cooperative',
+            entry_point='gym_multigrid.envs:Cooperative4HEnv'
+        )
+        env = gym.make('multigrid-cooperative')
+
     else:
         register(
             id='multigrid-collect-v0',
