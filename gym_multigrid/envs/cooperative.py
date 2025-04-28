@@ -2,12 +2,18 @@ from gym_multigrid.multigrid import *
 
 class Cooperative(MultiGridEnv):
     """
-    Environment in which the agents have to collect the balls
+    Environment in which the agents have to get food/rewards from exploiting predator prey dynamics
+
+    Grid size = 20
+    Num agents = 4
+    Time per Episode = 90
+    Agents view size = (3 x 3)
+
     """
 
     def __init__(
         self,
-        size=10,
+        size=25,
         width=None,
         height=None,
         num_balls=[],
@@ -15,7 +21,7 @@ class Cooperative(MultiGridEnv):
         balls_index=[],
         balls_reward=[],
         zero_sum = False,
-        view_size=7
+        view_size=3
 
     ):
         self.num_balls = num_balls
@@ -27,7 +33,7 @@ class Cooperative(MultiGridEnv):
 
         agents = []
         for i in agents_index:
-            agents.append(Agent(self.world, i, view_size=view_size))
+            agents.append(Agent(self.world, i, view_size=view_size, rect_view=False))
 
         super().__init__(
             grid_size=size,
@@ -57,7 +63,15 @@ class Cooperative(MultiGridEnv):
 
         # Randomize the player start position and orientation
         for a in self.agents:
-            self.place_agent(a)
+           self.place_agent(a)
+
+        # For debugging purposes; the things I do for a rectangular grid :(
+        #agents_loc = [(10, 10), (10, 20), (20, 10), (20, 20)]
+        #for i, a in enumerate(self.agents):
+            #self.put_obj(a, agents_loc[i][0], agents_loc[i][1])
+
+
+        self.put_obj(Ball(self.world, index, reward), 0, 0)
 
 
     def _reward(self, i, rewards, reward=1):
@@ -89,9 +103,9 @@ class Cooperative(MultiGridEnv):
 
 class Cooperative4HEnv(Cooperative):
     def __init__(self):
-        super().__init__(size=50,
+        super().__init__(size=25,
         num_balls=[5],
-        agents_index = [1,2,3],
+        agents_index = [1,2,3,4],
         balls_index=[0],
         balls_reward=[1],
         zero_sum=True)

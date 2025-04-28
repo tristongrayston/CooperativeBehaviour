@@ -385,7 +385,7 @@ class Box(WorldObj):
 
 
 class Agent(WorldObj):
-    def __init__(self, world, index=0, view_size=7):
+    def __init__(self, world, index=0, view_size=7, rect_view=True):
         super(Agent, self).__init__(world, 'agent', world.IDX_TO_COLOR[index])
         self.pos = None
         self.dir = None
@@ -395,6 +395,7 @@ class Agent(WorldObj):
         self.terminated = False
         self.started = True
         self.paused = False
+        self.rect_view = rect_view
 
     def render(self, img):
         c = COLORS[self.color]
@@ -484,28 +485,59 @@ class Agent(WorldObj):
         Get the extents of the square set of tiles visible to the agent
         Note: the bottom extent indices are not included in the set
         """
+        if self.rect_view == False:
+            # Facing right
+            if self.dir == 0:
+                topX = self.pos[0]
+                topY = self.pos[1] - self.view_size // 2
+            # Facing down
+            elif self.dir == 1:
+                topX = self.pos[0] - self.view_size // 2
+                topY = self.pos[1]
+            # Facing left
+            elif self.dir == 2:
+                topX = self.pos[0] - self.view_size + 1
+                topY = self.pos[1] - self.view_size // 2
+            # Facing up
+            elif self.dir == 3:
+                topX = self.pos[0] - self.view_size // 2
+                topY = self.pos[1] - self.view_size + 1
+            else:
+                assert False, "invalid agent direction"
 
-        # Facing right
-        if self.dir == 0:
-            topX = self.pos[0]
-            topY = self.pos[1] - self.view_size // 2
-        # Facing down
-        elif self.dir == 1:
-            topX = self.pos[0] - self.view_size // 2
-            topY = self.pos[1]
-        # Facing left
-        elif self.dir == 2:
-            topX = self.pos[0] - self.view_size + 1
-            topY = self.pos[1] - self.view_size // 2
-        # Facing up
-        elif self.dir == 3:
-            topX = self.pos[0] - self.view_size // 2
-            topY = self.pos[1] - self.view_size + 1
+            botX = topX + self.view_size
+            botY = topY + self.view_size
+        
         else:
-            assert False, "invalid agent direction"
+            # Facing right
+            if self.dir == 0:
+                topX = self.pos[0]
+                topY = self.pos[1] - self.view_size // 2
 
-        botX = topX + self.view_size
-        botY = topY + self.view_size
+                botX = topX + self.view_size * 2
+                botY = topY + self.view_size
+            # Facing down
+            elif self.dir == 1:
+                topX = self.pos[0] - self.view_size // 2
+                topY = self.pos[1]
+                botX = topX + self.view_size
+                botY = topY + self.view_size * 2
+            # Facing left
+            elif self.dir == 2:
+                topX = self.pos[0] - self.view_size*2 + 1
+                topY = self.pos[1] - self.view_size // 2
+                botX = topX + self.view_size*2 
+                botY = topY + self.view_size
+            # Facing up
+            elif self.dir == 3:
+                topX = self.pos[0] - self.view_size // 2
+                topY = self.pos[1] - self.view_size*2 + 1
+                botX = topX + self.view_size
+                botY = topY + self.view_size * 2
+            else:
+                assert False, "invalid agent direction"
+
+        #print(self.dir, " ", topX, topY, botX, botY)
 
         return (topX, topY, botX, botY)
 
@@ -1321,6 +1353,9 @@ class MultiGridEnv(gym.Env):
             obs = [self.grid.encode_for_agents(self.agents[i].pos) for i in range(len(actions))]
 
         obs=[self.objects.normalize_obs*ob for ob in obs]
+
+        print(obs[0].shape)
+        print(obs[0])
 
         return obs, rewards, done, {}
 
