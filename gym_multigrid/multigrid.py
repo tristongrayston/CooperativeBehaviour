@@ -385,7 +385,7 @@ class Box(WorldObj):
 
 
 class Agent(WorldObj):
-    def __init__(self, world, index=0, view_size=7, rect_view=True):
+    def __init__(self, world, index=0, view_size=7, rect_view=False):
         super(Agent, self).__init__(world, 'agent', world.IDX_TO_COLOR[index])
         self.pos = None
         self.dir = None
@@ -485,7 +485,9 @@ class Agent(WorldObj):
         Get the extents of the square set of tiles visible to the agent
         Note: the bottom extent indices are not included in the set
         """
+        #rint("rectangle view: ", self.rect_view)
         if self.rect_view == False:
+            #print("here")
             # Facing right
             if self.dir == 0:
                 topX = self.pos[0]
@@ -759,11 +761,13 @@ class Grid:
 
         array = np.zeros((self.width, self.height, world.encode_dim), dtype='uint8')
 
+        # Go through all of the cells in our viewing range
         for i in range(self.width):
             for j in range(self.height):
                 if vis_mask[i, j]:
                     v = self.get(i, j)
 
+                    # If there's nothing in the cell, set everything to 0
                     if v is None:
                         array[i, j, 0] = world.OBJECT_TO_IDX['empty']
                         array[i, j, 1] = 0
@@ -773,6 +777,7 @@ class Grid:
                             array[i, j, 4] = 0
                             array[i, j, 5] = 0
 
+                    # If there is something in the cell, encode what that is. 
                     else:
                         array[i, j, :] = v.encode(world)
 
@@ -1349,14 +1354,13 @@ class MultiGridEnv(gym.Env):
 
         if self.partial_obs:
             obs = self.gen_obs()
+            #obs = obs.T
         else:
             obs = [self.grid.encode_for_agents(self.agents[i].pos) for i in range(len(actions))]
 
         obs=[self.objects.normalize_obs*ob for ob in obs]
 
-        print(obs[0].shape)
-        print(obs[0])
-
+        #print(self.partial_obs)
         return obs, rewards, done, {}
 
     def gen_obs_grid(self):

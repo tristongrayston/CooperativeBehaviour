@@ -38,8 +38,8 @@ def main():
         env.render(mode='human', highlight=True)
         time.sleep(0.1)
 
-        #ac = [env.action_space.sample() for _ in range(nb_agents)]
-        ac = [0] * nb_agents
+        ac = [env.action_space.sample() for _ in range(nb_agents)]
+        #ac = [0] * nb_agents
 
         obs, _, done, _ = env.step(ac)
 
